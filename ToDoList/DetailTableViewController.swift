@@ -21,21 +21,46 @@ class DetailTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         if toDoItem == nil {
-            toDoItem = ToDoItem(name: "", date: Date(), notes: "")
+            toDoItem = ToDoItem(name: "", date: Date(), notes: "", reminderSet: false)
+           
         }
-        nameField.text = toDoItem.name
+       
+        upDateUserInterFace()
+    }
+    
+    func upDateUserInterFace() {
+//        if let name = nameField.text, !name.isEmpty {
+//              nameField.text = toDoItem.name
+//          }
+        if nameField.text?.isEmpty ?? true {
+                nameField.text = toDoItem.name
+            }
         dataPicker.date = toDoItem.date
         noteView.text = toDoItem.notes
         
+        reminderSwitch.isOn = toDoItem.reminderSet
+        dateLabel.textColor = reminderSwitch.isOn ? .black : .gray
         
-        
-        
+//        reminderSwitch.isOn = toDoItem.reminderSet
+//        if reminderSwitch.isOn {
+//            dateLabel.textColor = .black
+//        } else {
+//            dateLabel.textColor = .gray
+//        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        toDoItem = ToDoItem(name: nameField.text ?? "not String", date: dataPicker.date, notes: noteView.text)
+        //判斷是否空字串, 是空字串 就不會新增空白的 cell
+//        if nameField.text?.isEmpty ?? true {
+//                   toDoItem = nil
+//               } else {
+//                   toDoItem = ToDoItem(name: nameField.text ?? "", date: dataPicker.date, notes: noteView.text, reminderSet: reminderSwitch.isOn)
+//               }
+//
+        
+        toDoItem = ToDoItem(name: nameField.text ?? "not String", date: dataPicker.date, notes: noteView.text, reminderSet: reminderSwitch.isOn)
+//        toDoItem = ToDoItem(name: nameField.text ?? "not String", date: dataPicker.date, notes: noteView.text)
     }
     
     @IBAction func cencelBarBtn(_ sender: UIBarButtonItem) {
@@ -50,14 +75,35 @@ class DetailTableViewController: UITableViewController {
         }
         
     }
-    
+  
     @IBAction func reminderSwitchChange(_ sender: UISwitch) {
         
-        
+        dateLabel.textColor = (reminderSwitch.isOn ? .black : .gray)
+        tableView.beginUpdates()
+        tableView.endUpdates()
         
     }
     
     
     
     
+}
+
+extension DetailTableViewController {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        switch indexPath {
+        case IndexPath(row: 1, section: 1):
+            print("indexPath1: \(indexPath)")
+            print("dataPicker H : \(dataPicker.frame.height)")
+            print("Reminder switch isOn: \(reminderSwitch.isOn)")
+            return reminderSwitch.isOn ? dataPicker.frame.height : 0
+        case IndexPath(row: 0, section: 2):
+            print("indexPath2: \(indexPath)")
+            return 200
+
+        default:
+            return 44
+        }
+    }
 }

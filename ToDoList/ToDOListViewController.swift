@@ -14,7 +14,10 @@ class ToDOListViewController: UIViewController {
     @IBOutlet weak var addBarBtn: UIBarButtonItem!
     
 //    var toDoArray = ["Learn Swift", "Build App", "Change the word", "Take Pice"]
+    
     var toDoItems: [ToDoItem] = []
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -122,11 +125,12 @@ class ToDOListViewController: UIViewController {
     @IBAction func unwindFromDetail(segue: UIStoryboardSegue) {
         if let source = segue.source as? DetailTableViewController,
            let selectedIndexPath = tableView.indexPathForSelectedRow,
-           let toDoItem = source.toDoItem
-        {
+           let toDoItem = source.toDoItem {
             toDoItems[selectedIndexPath.row] = toDoItem
             tableView.reloadRows(at: [selectedIndexPath], with: .automatic)
-        }else {
+//            tableView.beginUpdates()
+//            tableView.endUpdates()
+        } else {
             // 按加號 在textField輸入的文字,會新增在底部 .buttom
             // 這IndexPath 一定要有 印出[0, 4]
             let newIndexPath = IndexPath(row: toDoItems.count, section: 0)
