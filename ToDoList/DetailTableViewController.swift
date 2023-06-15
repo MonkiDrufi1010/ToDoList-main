@@ -6,6 +6,15 @@
 
 import UIKit
 
+private let dateFormatter: DateFormatter = {
+    print("🆑 I Juse Created a Date Formatter")
+    let dateFormatters = DateFormatter()
+    dateFormatters.dateStyle = .short
+    dateFormatters.timeStyle = .short
+    return dateFormatters
+}()
+
+
 class DetailTableViewController: UITableViewController {
     
     
@@ -22,8 +31,10 @@ class DetailTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if toDoItem == nil {
-            toDoItem = ToDoItem(name: "", date: Date(), notes: "", reminderSet: false)
-           
+//            toDoItem = ToDoItem(name: "", date: Date(), notes: "", reminderSet: false)
+            toDoItem = ToDoItem(name: "", date: Date().addingTimeInterval(24*60*60), notes: "", reminderSet: false)
+            
+            
         }
        
         upDateUserInterFace()
@@ -41,6 +52,13 @@ class DetailTableViewController: UITableViewController {
         
         reminderSwitch.isOn = toDoItem.reminderSet
         dateLabel.textColor = reminderSwitch.isOn ? .black : .gray
+        //添加這行 會記錄上次的日期時間
+        dateLabel.text = dateFormatter.string(from: toDoItem.date)
+        
+       
+        
+        
+
         
 //        reminderSwitch.isOn = toDoItem.reminderSet
 //        if reminderSwitch.isOn {
@@ -84,6 +102,11 @@ class DetailTableViewController: UITableViewController {
         
     }
     
+    @IBAction func datePickerChange(_ sender: UIDatePicker) {
+ 
+        dateLabel.text = dateFormatter.string(from: sender.date)
+        
+    }
     
     
     

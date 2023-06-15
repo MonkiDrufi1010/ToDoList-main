@@ -129,6 +129,9 @@
                                                 <datePicker contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" id="mBq-UQ-vyg">
                                                     <rect key="frame" x="0.0" y="2" width="393" height="200"/>
                                                     <autoresizingMask key="autoresizingMask"/>
+                                                    <connections>
+                                                        <action selector="datePickerChange:" destination="6QL-vD-KgV" eventType="valueChanged" id="z8N-dP-TFw"/>
+                                                    </connections>
                                                 </datePicker>
                                             </subviews>
                                         </tableViewCellContentView>
