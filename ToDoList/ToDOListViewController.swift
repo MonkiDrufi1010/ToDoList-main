@@ -7,6 +7,7 @@
 
 import UIKit
 
+import UserNotifications
 
 
 class ToDOListViewController: UIViewController {
@@ -25,13 +26,75 @@ class ToDOListViewController: UIViewController {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        
+        autherizeLocalNotification()
         loadData()
-        
-        
-        
+       
+    }
+    // 通知訊息 但是目前沒有顯示通知 不知道為什麼
+    func autherizeLocalNotification() {
+        UNUserNotificationCenter.current().requestAuthorization { granted, error in
+            guard error == nil else {
+                print("😁 Error: \(error?.localizedDescription)")
+                return
+            }
+            if granted {
+                print("✋🏻 Notification Antorization Granted!")
+                
+            } else {
+                print("👻 The user has dneied notification!")
+            }
+            
+            
+        }
     }
     
+    //Notification 新增
+    func setCalenderNotification(title: String, subtitle: String, body: String,
+                                 badgeNumber: NSNumber?, sound: UNNotificationSound,
+                                 date: Date) -> String {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.subtitle = subtitle
+        content.body = body
+        content.sound = sound
+        content.badge = badgeNumber
+        
+        //create trigger
+        var dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        dateComponents.second = 00
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        
+        //create equest
+        let notificationID = UUID().uuidString
+        let request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
+        //register request with the notification center
+        UNUserNotificationCenter.current().add(request) { (error) in
+            if let error = error {
+                print("😤 ERROR: \(error.localizedDescription) Yikes")
+            } else {
+                print("Notification scheduled \(notificationID), title: \(content.title)")
+            }
+            
+        }
+        
+        return notificationID
+    }
+    
+    //Notification 新增
+    func setNotifications() {
+        guard toDoItems.count > 0 else {return}
+        
+        // remove all notifications
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        // and let's re-carate them with the update date that we just save
+        for index in 0..<toDoItems.count {
+            if toDoItems[index].reminderSet {
+                let toDoItem = toDoItems[index]
+                toDoItems[index].notificationID = setCalenderNotification(title: toDoItem.name, subtitle: "", body: toDoItem.notes, badgeNumber: nil, sound: .default, date: toDoItem.date)
+            }
+        }
+        
+    }
     
     func loadData() {
         let directoryURL = FileManager.default.urls(for: .documentDirectory,
@@ -75,6 +138,12 @@ class ToDOListViewController: UIViewController {
             print("Error: Could not save data \(error.localizedDescription)")
         }
         
+        // Notification 新增的 //下面新增 set setNotifications() 這兩行就註解 因為寫在裡面
+//        let toDoItem = toDoItems.first!
+//        let notificationID = setCalenderNotification(title: toDoItem.name, subtitle: "SUBTITLE world go here", body: toDoItem.notes, badgeNumber: nil, sound: .default, date: toDoItem.date)
+        
+        //notification 新增
+        setNotifications()
         
     }
     

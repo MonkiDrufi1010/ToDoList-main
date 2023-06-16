@@ -15,6 +15,8 @@ struct ToDoItem: Codable {
     var notes: String
     var reminderSet: Bool
 //    var image: UIImage
+    //新增
+    var notificationID: String?
     
 }
 
